@@ -1,5 +1,7 @@
 #' @title Import physionet generated data, saved in a txt file
 #' 
+#' # TODO : redo help section after making the function more general 
+#' 
 #' @param workingDir The directory the data and RECORDS file (containing
 #' the list of samples) are located.
 #' @param fileSuffix The suffix of the files from which data should be imported.
@@ -12,7 +14,7 @@
 #' Outputs a data frame wih same two cloumns.
 #' 
 #' @export
-ImportHRConstantInterval <- function (
+Import_physionet_HR <- function (
   workingDir,
   fileSuffix=".unauditedHRconstint.txt") {
   # load RECORDS list
@@ -23,15 +25,13 @@ ImportHRConstantInterval <- function (
   result <- list()
   dataframe <- data.frame()
   # loop through all records
-  i <- 1
-  for (rec in Records) {
+   for (rec in Records) {
+    # browser()
     filename <- paste(workingDir, rec, fileSuffix, sep="")
     dataframe <- read.table(filename, sep="\t", dec=".")
     colnames(dataframe) <-
       c("time","BPM")
-    result[[i]] <- dataframe
-    names(result)[i] <- paste(rec)
-    i <- i+1
+    result[[rec]] <- list("HR_constant_interval" = dataframe)
   }
   # return list of results
   return(result)
