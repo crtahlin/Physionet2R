@@ -14,24 +14,27 @@
 #' Outputs a data frame wih same two cloumns.
 #' 
 #' @export
-Import_physionet_HR <- function (
-  workingDir,
-  fileSuffix=".unauditedHRconstint.txt") {
+Import_physionet_HR <- function (workingDir) {
   # load RECORDS list
   parseRecords <- paste("cat ",workingDir, "RECORDS", sep="")
   Records <- system(parseRecords, intern=TRUE)
   
   # create list and data frame to hold results for each record file
   result <- list()
-  dataframe <- data.frame()
   # loop through all records
    for (rec in Records) {
-    # browser()
-    filename <- paste(workingDir, rec, fileSuffix, sep="")
+    # unadited HR data
+    filename <- paste(workingDir, rec, ".unaudited_HR_constint.txt", sep="")
     dataframe <- read.table(filename, sep="\t", dec=".")
-    colnames(dataframe) <-
-      c("time","BPM")
-    result[[rec]] <- list("HR_constant_interval" = dataframe)
+    colnames(dataframe) <- c("time","BPM")
+    result[[rec]][["unadited_HR_constant_interval"]] <- dataframe
+    
+    # annotation data
+    filename <- paste(workingDir, rec, ".unaudited_annotations.txt", sep="")
+    dataframe <- read.table(filename, sep="", dec=".", fill = TRUE)
+    colnames(dataframe) <- c("Seconds", "Minutes", "Hours", "Type", "Sub", "Chan", "Num",	"Aux")
+    result[[rec]][["unadited_annotations"]] <- dataframe
+    
   }
   # return list of results
   return(result)
