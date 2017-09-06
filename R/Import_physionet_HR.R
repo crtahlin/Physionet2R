@@ -31,7 +31,8 @@ Import_physionet_HR <- function (workingDir) {
     
     # annotation data
     filename <- paste(workingDir, rec, ".unaudited_annotations.txt", sep="")
-    dataframe <- read.table(filename, sep="", dec=".", fill = TRUE)
+    dataframe <- read.table(filename, sep="", dec=".", fill = TRUE, header = TRUE,
+                            colClasses = c("numeric", "numeric", "numeric", "factor", "factor", "factor", "factor", "factor" ))
     colnames(dataframe) <- c("Seconds", "Minutes", "Hours", "Type", "Sub", "Chan", "Num",	"Aux")
     result[[rec]][["unadited_annotations"]] <- dataframe
     
