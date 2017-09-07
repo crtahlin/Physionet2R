@@ -25,7 +25,13 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-       plotOutput("distPlot")
+       textOutput("header"),
+       plotOutput("plot_record",
+                  brush = brushOpts(
+                    id = "plot_record_brush",
+                    resetOnNew = TRUE)
+                  ),
+       plotOutput("plot_record_zoomed")
     )
   )
 ))
