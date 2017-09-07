@@ -22,19 +22,37 @@ Import_physionet_HR <- function (workingDir) {
   # create list and data frame to hold results for each record file
   result <- list()
   # loop through all records
-   for (rec in Records) {
-    # unadited HR data
-    filename <- paste(workingDir, rec, ".unaudited_HR_constint.txt", sep="")
-    dataframe <- read.table(filename, sep="\t", dec=".")
-    colnames(dataframe) <- c("time","BPM")
-    result[[rec]][["unadited_HR_constant_interval"]] <- dataframe
-    
-    # annotation data
-    filename <- paste(workingDir, rec, ".unaudited_annotations.txt", sep="")
-    dataframe <- read.table(filename, sep="", dec=".", fill = TRUE, header = TRUE,
-                            colClasses = c("numeric", "numeric", "numeric", "factor", "factor", "factor", "factor", "factor" ))
-    colnames(dataframe) <- c("Seconds", "Minutes", "Hours", "Type", "Sub", "Chan", "Num",	"Aux")
-    result[[rec]][["unadited_annotations"]] <- dataframe
+  for (rec in Records) {
+    try({
+      # unaudited HR data
+      filename <- paste(workingDir, rec, ".unaudited_HR_constint.txt", sep="")
+      dataframe <- read.table(filename, sep="\t", dec=".")
+      colnames(dataframe) <- c("time","BPM")
+      result[[rec]][["unadited_HR_constant_interval"]] <- dataframe
+    })
+    try({
+      # audited HR data
+      filename <- paste(workingDir, rec, ".reference_HR_constint.txt", sep="")
+      dataframe <- read.table(filename, sep="\t", dec=".")
+      colnames(dataframe) <- c("time","BPM")
+      result[[rec]][["reference_HR_constant_interval"]] <- dataframe
+    })
+    try({
+      # unaudited annotation data
+      filename <- paste(workingDir, rec, ".unaudited_annotations.txt", sep="")
+      dataframe <- read.table(filename, sep="", dec=".", fill = TRUE, header = TRUE,
+                              colClasses = c("numeric", "numeric", "numeric", "factor", "factor", "factor", "factor", "factor" ))
+      colnames(dataframe) <- c("Seconds", "Minutes", "Hours", "Type", "Sub", "Chan", "Num",	"Aux")
+      result[[rec]][["unadited_annotations"]] <- dataframe
+    })
+    try({
+      # audited annotation data
+      filename <- paste(workingDir, rec, ".reference_annotations.txt", sep="")
+      dataframe <- read.table(filename, sep="", dec=".", fill = TRUE, header = TRUE,
+                              colClasses = c("numeric", "numeric", "numeric", "factor", "factor", "factor", "factor", "factor" ))
+      colnames(dataframe) <- c("Seconds", "Minutes", "Hours", "Type", "Sub", "Chan", "Num",	"Aux")
+      result[[rec]][["reference_annotations"]] <- dataframe
+    })
     
   }
   # return list of results
