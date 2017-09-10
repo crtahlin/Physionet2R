@@ -44,7 +44,9 @@ shinyServer(function(input, output) {
   
   # header for the output
   output$header <- renderText({
-    paste("Selected record: ", input$selected_record)
+    paste("Selected record: ", input$selected_record, "\n",
+          "HR record type: ", active_record_HR_type(), "\n",
+          "annotation type:", active_record_annotations_type(), "\n")
   })
   
   # get data for the selecte record

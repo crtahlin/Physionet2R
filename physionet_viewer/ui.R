@@ -25,7 +25,7 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-       textOutput("header"),
+       verbatimTextOutput("header"),
        plotOutput("plot_record",
                   brush = brushOpts(
                     id = "plot_record_brush",
