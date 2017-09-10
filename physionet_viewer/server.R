@@ -53,6 +53,24 @@ shinyServer(function(input, output) {
     return(data[[input$selected_record]])
   })
   
+  # determine which HR and annotation types exist and get names of list for:
+  # - reference types annotations, if they exist (since they are more "accurate")
+  # - unadited annotatins, if referenced one do not exist
+  
+  # get HR dataset name
+  active_record_HR_type <- reactive({
+    what_exists <- names(active_record_data())
+    if ("reference_HR_constant_interval" %in% what_exists) {return("reference_HR_constant_interval")}
+    if ("unadited_HR_constant_interval" %in% what_exists) {return("unadited_HR_constant_interval")}
+  })
+  
+  # get annotation dataset name
+  active_record_annotations_type <- reactive({
+    what_exists <- names(active_record_data())
+    if ("reference_annotations" %in% what_exists) {return("reference_annotations")}
+    if ("unadited_annotations" %in% what_exists) {return("unadited_annotations")}
+  })
+  
   # link the two plots
   ranges_zoomed <- reactiveValues(x = NULL, y = NULL)
   
@@ -69,18 +87,21 @@ shinyServer(function(input, output) {
     }
   })
   
+  # TODO: some databases have only unaudited annotations; some have reference annotaions
+  # plot those that exist, so we have to add a check mechanism - if reference (atr) exist, plot hem, otherwise plot unadited
+  
   # plot the graph of selected record
   output$plot_record <- renderPlot({
     ggplot() + 
-      geom_line(aes(x = time, y = BPM), data = active_record_data()[["unadited_HR_constant_interval"]]) +
-      geom_text(aes(x = Seconds, y = 50, label = Aux), data = active_record_data()[["unadited_annotations"]])
+      geom_line(aes(x = time, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
+      geom_text(aes(x = Seconds, y = 50, label = Aux), data = active_record_data()[[active_record_annotations_type()]], col = "red")
   })
   
   # plot the zoomed portion of graph
   output$plot_record_zoomed <- renderPlot({
     ggplot() + 
-      geom_line(aes(x = time, y = BPM), data = active_record_data()[["unadited_HR_constant_interval"]]) +
-      geom_text(aes(x = Seconds, y = 50, label = Aux), data = active_record_data()[["unadited_annotations"]]) +
+      geom_line(aes(x = time, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
+      geom_text(aes(x = Seconds, y = 50, label = Aux), data = active_record_data()[[active_record_annotations_type()]], col = "red") +
       coord_cartesian(xlim = ranges_zoomed$x, ylim = ranges_zoomed$y, expand = FALSE)
     
   })
