@@ -20,7 +20,9 @@ shinyUI(fluidPage(
     sidebarPanel(
       # add: select dataset (sddb, ...), select record, select zoom, select annotations
        uiOutput("select_data_file"),
-       uiOutput("select_record")
+       uiOutput("select_record"),
+       uiOutput("select_annotations_to_plot"),
+       width = 2
     ),
     
     # Show a plot of the generated distribution

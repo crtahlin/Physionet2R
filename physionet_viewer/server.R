@@ -9,6 +9,7 @@
 
 library(shiny)
 library(tools)
+library(ggplot2)
 
 # read all files in data folder
 data_files_list <- list.files(path = "./data")
@@ -61,17 +62,31 @@ shinyServer(function(input, output) {
   
   # get HR dataset name
   active_record_HR_type <- reactive({
-    what_exists <- names(active_record_data())
-    if ("reference_HR_constant_interval" %in% what_exists) {return("reference_HR_constant_interval")}
-    if ("unadited_HR_constant_interval" %in% what_exists) {return("unadited_HR_constant_interval")}
+    # what_exists <- names(active_record_data())
+    # if ("reference_HR_constant_interval" %in% what_exists) {return("reference_HR_constant_interval")}
+    # if ("unadited_HR_constant_interval" %in% what_exists) {return("unadited_HR_constant_interval")}
+    
+    return("HR_constant_interval")
   })
   
   # get annotation dataset name
   active_record_annotations_type <- reactive({
-    what_exists <- names(active_record_data())
-    if ("reference_annotations" %in% what_exists) {return("reference_annotations")}
-    if ("unadited_annotations" %in% what_exists) {return("unadited_annotations")}
+    # what_exists <- names(active_record_data())
+    # if ("reference_annotations" %in% what_exists) {return("reference_annotations")}
+    # if ("unadited_annotations" %in% what_exists) {return("unadited_annotations")}
+    
+    return("annotations")
   })
+  
+  # selector for which annotations to plot
+  output$select_annotations_to_plot <- renderUI({
+    selectInput("selected_annotations_to_plot", "Select annotations to plot:",
+                choices = unique(active_record_data()[[active_record_annotations_type()]]["Aux"]),
+                multiple = TRUE,
+                selected = c("(AFIB", "(N"))
+  })
+  
+  # TODO : even if none are selected, plot the graph... some don't have annotations
   
   # link the two plots
   ranges_zoomed <- reactiveValues(x = NULL, y = NULL)
@@ -89,22 +104,24 @@ shinyServer(function(input, output) {
     }
   })
   
-  # TODO: some databases have only unaudited annotations; some have reference annotaions
-  # plot those that exist, so we have to add a check mechanism - if reference (atr) exist, plot hem, otherwise plot unadited
-  
   # plot the graph of selected record
   output$plot_record <- renderPlot({
+    # only plot annotation types that are selected
+    annotations_subset <- active_record_data()[[active_record_annotations_type()]][ (active_record_data()[[active_record_annotations_type()]][,"Aux"] %in% input$selected_annotations_to_plot), ]
     ggplot() + 
       geom_line(aes(x = time, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
-      geom_text(aes(x = Seconds, y = 50, label = Aux), data = active_record_data()[[active_record_annotations_type()]], col = "red")
+      if (dim(annotations_subset)[1] > 0) {geom_text(aes(x = Seconds, y = 50, label = Aux), data = annotations_subset, col = "red")}
   })
   
   # plot the zoomed portion of graph
   output$plot_record_zoomed <- renderPlot({
+    # only plot annotation types that are selected
+    annotations_subset <- active_record_data()[[active_record_annotations_type()]][ (active_record_data()[[active_record_annotations_type()]][,"Aux"] %in% input$selected_annotations_to_plot), ]
+    
     ggplot() + 
       geom_line(aes(x = time, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
-      geom_text(aes(x = Seconds, y = 50, label = Aux), data = active_record_data()[[active_record_annotations_type()]], col = "red") +
-      coord_cartesian(xlim = ranges_zoomed$x, ylim = ranges_zoomed$y, expand = FALSE)
+      coord_cartesian(xlim = ranges_zoomed$x, ylim = ranges_zoomed$y, expand = FALSE) +
+      if (dim(annotations_subset)[1] > 0) {geom_text(aes(x = Seconds, y = 50, label = Aux), data = annotations_subset, col = "red")} 
     
   })
   
