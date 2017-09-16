@@ -6,14 +6,16 @@
 
 # TODO : redo help section after making the function more general}
 \usage{
-Import_physionet_HR(workingDir)
+Import_physionet_HR(workingDir, fileSuffix_HR_constint, fileSuffix_annotations)
 }
 \arguments{
 \item{workingDir}{The directory the data and RECORDS file (containing
 the list of samples) are located.}
 
-\item{fileSuffix}{The suffix of the files from which data should be imported.
+\item{fileSuffix_HR_constint}{The suffix of the files from which HR constant interval data should be imported.
 E.g. "".unauditedHRconstint.txt" by default.}
+
+\item{fileSuffix_annotations}{Suffix for annotations file.}
 }
 \description{
 Imports data from a txt file (csv), that contains two columns:
