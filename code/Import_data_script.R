@@ -5,7 +5,7 @@ getwd()
 
 # afdb data
 workingDir <- "../sklop3.physionet.data/afdb/"
-afdb_data <- Import_physionet_HR(workingDir = workingDir, fileSuffix_HR_constint = ".qrs_HR_constint.txt", fileSuffix_annotations = ".qrs_annotations.txt")
+afdb_data <- Import_physionet_HR(workingDir = workingDir, fileSuffix_HR_constint = ".qrs_HR_constint.txt", fileSuffix_annotations = ".atr_annotations.txt")
 str(afdb_data)
 save(afdb_data, file = "./physionet_viewer/data/afdb_data.Rdata")
 
@@ -29,7 +29,8 @@ save(cudb_data, file = "./physionet_viewer/data/cudb_data.Rdata")
 
 # ltafdb data
 workingDir <- "../sklop3.physionet.data/ltafdb/"
-ltafdb_data <- Import_physionet_HR(workingDir = workingDir, fileSuffix_HR_constint = ".qrs_HR_constint.txt", fileSuffix_annotations = ".qrs_annotations.txt")
+# NOTE: deleted rows containing string " Aux", it seems as of some kind of bug
+ltafdb_data <- Import_physionet_HR(workingDir = workingDir, fileSuffix_HR_constint = ".qrs_HR_constint.txt", fileSuffix_annotations = ".atr_annotations.txt")
 str(ltafdb_data)
 save(ltafdb_data, file = "./physionet_viewer/data/ltafdb_data.Rdata")
 
