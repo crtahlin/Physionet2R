@@ -14,6 +14,11 @@ library(ggplot2)
 # read all files in data folder
 data_files_list <- list.files(path = "./data")
 
+# # load all data files
+# for (file in data_files_list) {
+#   load(paste0("./data/",file))
+# }
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
@@ -23,19 +28,27 @@ shinyServer(function(input, output) {
                 choices = c("",data_files_list), selected = "")
   })   
   
-  # load the selected data
-  active_data <- reactive({
-    load(paste0("./data/", input$selected_data))
-  })
+  
   
   # gets the name of the "active" dataset
   active_dataset_name <- reactive({
+    validate(need(input$selected_data, 'select dataset!'))
     file_path_sans_ext(input$selected_data)
     })
   
+  # load the selected data
+  active_dataset <- reactive({
+    validate(need(input$selected_data, 'select dataset!'))
+    load(paste0("./data/", input$selected_data))
+    data <- get(active_dataset_name())
+    #rm(active_dataset_name())
+    return(data)
+  })
+  
   # list all records of the active dataset
   all_records <- reactive({
-    names(get(active_dataset_name()) )
+    # names(get(active_dataset_name()) )
+    names(active_dataset())
   })
   
   # construct menu to select a record
@@ -52,7 +65,8 @@ shinyServer(function(input, output) {
   
   # get data for the selecte record
   active_record_data <- reactive({
-    data <- get(active_dataset_name())
+    # data <- get(active_dataset_name())
+    data <- active_dataset()
     return(data[[input$selected_record]])
   })
   
@@ -109,8 +123,8 @@ shinyServer(function(input, output) {
     # only plot annotation types that are selected
     annotations_subset <- active_record_data()[[active_record_annotations_type()]][ (active_record_data()[[active_record_annotations_type()]][,"Aux"] %in% input$selected_annotations_to_plot), ]
     ggplot() + 
-      geom_line(aes(x = time, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
-      if (dim(annotations_subset)[1] > 0) {geom_text(aes(x = Seconds, y = 50, label = Aux), data = annotations_subset, col = "red")}
+      geom_line(aes(x = time/60, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
+      if (dim(annotations_subset)[1] > 0) {geom_text(aes(x = Seconds/60, y = 50, label = Aux), data = annotations_subset, col = "red")}
   })
   
   # plot the zoomed portion of graph
@@ -119,9 +133,9 @@ shinyServer(function(input, output) {
     annotations_subset <- active_record_data()[[active_record_annotations_type()]][ (active_record_data()[[active_record_annotations_type()]][,"Aux"] %in% input$selected_annotations_to_plot), ]
     
     ggplot() + 
-      geom_line(aes(x = time, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
+      geom_line(aes(x = time/60, y = BPM), data = active_record_data()[[active_record_HR_type()]]) +
       coord_cartesian(xlim = ranges_zoomed$x, ylim = ranges_zoomed$y, expand = FALSE) +
-      if (dim(annotations_subset)[1] > 0) {geom_text(aes(x = Seconds, y = 50, label = Aux), data = annotations_subset, col = "red")} 
+      if (dim(annotations_subset)[1] > 0) {geom_text(aes(x = Seconds/60, y = 50, label = Aux), data = annotations_subset, col = "red")} 
     
   })
   
