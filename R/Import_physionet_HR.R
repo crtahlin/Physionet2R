@@ -63,6 +63,10 @@ Import_physionet_HR <- function (workingDir,
     try({
       # annotation data
       filename <- paste(workingDir, rec, fileSuffix_annotations, sep="")
+      print(filename)
+      # remove lines with \001
+      remove_lines_with_pattern(file = filename, pattern = "\001")
+      # load annotations to dataframe
       dataframe <- read.table(filename, sep="", dec=".", fill = TRUE, header = TRUE,
                               colClasses = c("numeric", "numeric", "numeric", "factor", "factor", "factor", "factor", "factor" ))
       colnames(dataframe) <- c("Seconds", "Minutes", "Hours", "Type", "Sub", "Chan", "Num",	"Aux")
