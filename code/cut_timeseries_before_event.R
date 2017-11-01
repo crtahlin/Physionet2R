@@ -53,7 +53,6 @@ return_interval_boundaries <- function(
   str(annotations_data)
   annotations_data
   
-  browser()
   # check if consecutive Aux entries are different and process them
   intervals_data <- data.frame()
   i <- 1
@@ -68,10 +67,13 @@ return_interval_boundaries <- function(
     i <- i + j
   }
   
+  # remove intervals of zero lenght
+  intervals_data <- intervals_data[ (intervals_data$Interval_start != intervals_data$Interval_end ), ]
+  
   return(intervals_data)
 }
   
-return_interval_boundaries(data = sddb_data$`30`$annotations)  
+interval_boundaries <- return_interval_boundaries(data = sddb_data$`30`$annotations)  
 
 # todo_ cleanup : remove intervals of zero lentgh (če isti začetek in konec)
 # todo: naslednja funkcija - klasificiraj interval: če je 
@@ -79,3 +81,16 @@ return_interval_boundaries(data = sddb_data$`30`$annotations)
 # N - AFIB = before_AFIB
 # N - N  = normal
 # AFIB - AFIB = during_AFIB
+
+label_interval_type_AFIB <- function(data) {
+  data[ ((data$Signal_at_start == "(N" ) & (data$Signal_at_end == "(N") ), "Interval_type"] <- "normal_to_normal"
+  data[ ((data$Signal_at_start == "(N" ) & (data$Signal_at_end == "(AFIB") ), "Interval_type"] <- "normal_to_AFIB"
+  data[ ((data$Signal_at_start == "(AFIB" ) & (data$Signal_at_end == "(AFIB") ), "Interval_type"] <- "AFIB_to_AFIB"
+  data[ ((data$Signal_at_start == "(AFIB" ) & (data$Signal_at_end == "(N") ), "Interval_type"] <- "AFIB_to_normal"
+  
+return(data)    
+}
+
+label_interval_type_AFIB(interval_boundaries)
+
+# todo: cut up data into separate datasets - as list labeled by type of 
