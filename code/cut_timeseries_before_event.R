@@ -53,15 +53,29 @@ return_interval_boundaries <- function(
   str(annotations_data)
   annotations_data
   
+  browser()
   # check if consecutive Aux entries are different and process them
   intervals_data <- data.frame()
   i <- 1
-  while (i <= dim(annotations_data)[1]) {
+  while (i < dim(annotations_data)[1]) {
     j <- 1
-    while (annotations_data[i] != annotations_data[i+j]) { j <- j + 1 }
-    intervals_data
+    while ( (annotations_data[i, "Aux"] == annotations_data[(i+j), "Aux"] ) & ( (i + j) < dim(annotations_data)[1] )  ) { j <- (j + 1) }
+    last_interval_data <- data.frame(Interval_start = annotations_data[i, "Seconds"],
+                                     Interval_end = annotations_data[(i+j), "Seconds"],
+                                     Signal_at_start = as.character(annotations_data[i, "Aux"]),
+                                     Signal_at_end = as.character(annotations_data[(i + j), "Aux"]))
+    if (dim(intervals_data)[1] > 0) {intervals_data <- rbind(intervals_data, last_interval_data)} else {intervals_data <- last_interval_data}
+    i <- i + j
   }
   
+  return(intervals_data)
 }
   
 return_interval_boundaries(data = sddb_data$`30`$annotations)  
+
+# todo_ cleanup : remove intervals of zero lentgh (če isti začetek in konec)
+# todo: naslednja funkcija - klasificiraj interval: če je 
+# AFIB - N = during_AFIB
+# N - AFIB = before_AFIB
+# N - N  = normal
+# AFIB - AFIB = during_AFIB
