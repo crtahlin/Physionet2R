@@ -94,3 +94,29 @@ return(data)
 label_interval_type_AFIB(interval_boundaries)
 
 # todo: cut up data into separate datasets - as list labeled by type of 
+
+cut_data_by_interval_type <- function(annotation_data, heart_beat_data) {
+  # get interval boundaries
+  interval_boundaries <- return_interval_boundaries(annotation_data)
+  # label intervals
+  labeled_intervals <- label_interval_type_AFIB(interval_boundaries)
+  # calculate interval length
+  labeled_intervals[, "Interval_length"] <- (labeled_intervals$Interval_end - labeled_intervals$Interval_start)
+  # add annotation data to heartbeat data
+  # the best way to do this?
+  # maybe do a for loop across all the data and ad to each line the data from the labeled intervals
+  for (row in 1:dim(heart_beat_data)[1]) { 
+    heart_beat_data[row, "time"] >= labeled_intervals$Interval_start  
+    }
+  
+  
+  return(labeled_intervals)
+}
+
+str(sddb_data$`30`$HR_constant_interval)
+
+cut_data_by_interval_type(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval)
+str(sddb_data)
+# morda najlažje, če bo vse v enem velikem data framu? stolpci:
+# Database, Record, Interval_ID (dodam v funkcijo cut_... ), Signal_at_start, Signal_at_end, Interval_type, Interval_length, time, BPM
+# morda tudi Interval_start in Interval_end, vsaj za začetek, za kontrolo
