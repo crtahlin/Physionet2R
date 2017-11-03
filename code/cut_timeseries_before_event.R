@@ -96,42 +96,46 @@ label_interval_type_AFIB(interval_boundaries)
 
 # todo: cut up data into separate datasets - as list labeled by type of 
 
-cut_data_by_interval_type <- function(annotation_data, heart_beat_data) {
-  # get interval boundaries
-  interval_boundaries <- return_interval_boundaries(annotation_data = annotation_data, heart_beat_data = heart_beat_data)
-  # label intervals
-  labeled_intervals <- label_interval_type_AFIB(interval_boundaries)
-  # calculate interval length
-  labeled_intervals[, "Interval_length"] <- (labeled_intervals$Interval_end - labeled_intervals$Interval_start)
-  # add annotation data to heartbeat data
-  # the best way to do this?
-  # maybe do a for loop across all the data and ad to each line the data from the labeled intervals
-  browser()
-  heart_beat_data[, names(labeled_intervals)] <- NA
-  for (row in 1:dim(heart_beat_data)[1]) {
-    # if time at last value for 
-    print(row)
-    if ( heart_beat_data[row, "time"] < tail(labeled_intervals$Interval_end, 1) ) {
-      interval_true <- ((heart_beat_data[row, "time"] >= labeled_intervals$Interval_start) & (heart_beat_data[row, "time"] < labeled_intervals$Interval_end))  
-    } else {
-      interval_true <- (heart_beat_data[row, "time"] == labeled_intervals$Interval_end)
-    }
-    
-    heart_beat_data[row, names(labeled_intervals)] <- labeled_intervals[interval_true,]
-    }
-  
-  
-  return(heart_beat_data)
-}
+# cut_data_by_interval_type <- function(annotation_data, heart_beat_data) {
+#   # get interval boundaries
+#   interval_boundaries <- return_interval_boundaries(annotation_data = annotation_data, heart_beat_data = heart_beat_data)
+#   # label intervals
+#   labeled_intervals <- label_interval_type_AFIB(interval_boundaries)
+#   # calculate interval length
+#   labeled_intervals[, "Interval_length"] <- (labeled_intervals$Interval_end - labeled_intervals$Interval_start)
+#   # add annotation data to heartbeat data
+#   # the best way to do this?
+#   # maybe do a for loop across all the data and ad to each line the data from the labeled intervals
+#   heart_beat_data[, names(labeled_intervals)] <- NA
+#   for (row in 1:dim(heart_beat_data)[1]) {
+#     # if time at last value for 
+#     # print(row)
+#     if ( heart_beat_data[row, "time"] < tail(labeled_intervals$Interval_end, 1) ) {
+#       interval_true <- ((heart_beat_data[row, "time"] >= labeled_intervals$Interval_start) & (heart_beat_data[row, "time"] < labeled_intervals$Interval_end))  
+#     } else {
+#       interval_true <- (heart_beat_data[row, "time"] == labeled_intervals$Interval_end)
+#     }
+#     
+#     heart_beat_data[row, names(labeled_intervals)] <- labeled_intervals[interval_true,]
+#     }
+#   
+#   
+#   return(heart_beat_data)
+# }
 
 str(sddb_data$`30`$HR_constant_interval)
 
-system.time(temp <- cut_data_by_interval_type(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval[350000:360000,])) # 
+detach("package:Physionet2R", unload = TRUE)
+library(physionet2R)
+system.time(temp <- cut_data_by_interval_type(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval[350000:353587,])) # 
 str(sddb_data)
 tail(temp)
 
 # morda najlažje, če bo vse v enem velikem data framu? stolpci:
 # Database, Record, Interval_ID (dodam v funkcijo cut_... ), Signal_at_start, Signal_at_end, Interval_type, Interval_length, time, BPM
 # morda tudi Interval_start in Interval_end, vsaj za začetek, za kontrolo
+
+# TODO : en major loop skozi vse recorde v enem data baseu  - dodaja v data frame
+# TODO : še en loop, ki gre skozi vse baze? ali pa potem na koncu zmergam...
 
 # TODO: ali ima zanji interval annotacij vrenost TIME enako zadnji vrednosti time serije podatkov? # tule je BUG !!!!
