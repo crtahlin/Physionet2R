@@ -2,7 +2,7 @@
 #' 
 #' @export
 return_interval_boundaries <- function(
-  annotation_data, # one record
+  annotation_data, 
   heart_beat_data, 
   event_start_signal = "(AFIB",
   event_end_signal = "(N" ) {
@@ -23,7 +23,7 @@ return_interval_boundaries <- function(
   # add non-event at the begining
   annotations_data <- rbind( data.frame(Seconds=0.0, Aux = event_end_signal), annotations_data)
   # add a non-event at the end
-  annotations_data <- rbind( annotations_data, data.frame( Seconds = max(heart_beat_data$time), Aux = as.character(tail(annotations_data$Aux, 1) ) ))
+  annotations_data <- rbind( annotations_data, data.frame( Seconds = max(heart_beat_data$time, na.rm = TRUE), Aux = as.character(tail(annotations_data$Aux, 1) ) ))
   str(annotations_data)
   annotations_data
   
