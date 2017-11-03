@@ -105,18 +105,21 @@ cut_data_by_interval_type <- function(annotation_data, heart_beat_data) {
   # add annotation data to heartbeat data
   # the best way to do this?
   # maybe do a for loop across all the data and ad to each line the data from the labeled intervals
+  heart_beat_data[, names(labeled_intervals)] <- NA
   for (row in 1:dim(heart_beat_data)[1]) { 
-    heart_beat_data[row, "time"] >= labeled_intervals$Interval_start  
+    interval_true <- ((heart_beat_data[row, "time"] >= labeled_intervals$Interval_start) & (heart_beat_data[row, "time"] < labeled_intervals$Interval_end))
+    heart_beat_data[row, names(labeled_intervals)] <- labeled_intervals[interval_true,]
     }
   
   
-  return(labeled_intervals)
+  return(heart_beat_data)
 }
 
 str(sddb_data$`30`$HR_constant_interval)
 
-cut_data_by_interval_type(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval)
+system.time(temp <- cut_data_by_interval_type(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval[1:10000,]))
 str(sddb_data)
+temp
 # morda najlažje, če bo vse v enem velikem data framu? stolpci:
 # Database, Record, Interval_ID (dodam v funkcijo cut_... ), Signal_at_start, Signal_at_end, Interval_type, Interval_length, time, BPM
 # morda tudi Interval_start in Interval_end, vsaj za začetek, za kontrolo
