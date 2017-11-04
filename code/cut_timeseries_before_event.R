@@ -127,9 +127,16 @@ str(sddb_data$`30`$HR_constant_interval)
 
 detach("package:Physionet2R", unload = TRUE)
 library(physionet2R)
-system.time(temp <- cut_data_by_interval_type(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval[350000:353587,])) # 
+system.time(temp <- cut_data_by_interval_type(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval)) # [350000:353587,] 
+system.time(temp2 <- cut_data_by_interval_type2(sddb_data$`30`$annotations, sddb_data$`30`$HR_constant_interval)) # [350000:353587,] 
+
 str(sddb_data)
 tail(temp)
+tail(temp2)
+
+to_compare <- c("time", "BPM", "Interval_start", "Interval_end", "Interval_type", "Interval_length")
+identical(temp[, to_compare], temp2[, to_compare])
+# JUPI!
 
 # morda najlažje, če bo vse v enem velikem data framu? stolpci:
 # Database, Record, Interval_ID (dodam v funkcijo cut_... ), Signal_at_start, Signal_at_end, Interval_type, Interval_length, time, BPM

@@ -2,6 +2,7 @@
 
 export(Import_physionet_HR)
 export(cut_data_by_interval_type)
+export(cut_data_by_interval_type2)
 export(find_annotation)
 export(label_interval_type_AFIB)
 export(remove_lines_with_pattern)
