@@ -142,6 +142,52 @@ identical(temp[, to_compare], temp2[, to_compare])
 # Database, Record, Interval_ID (dodam v funkcijo cut_... ), Signal_at_start, Signal_at_end, Interval_type, Interval_length, time, BPM
 # morda tudi Interval_start in Interval_end, vsaj za začetek, za kontrolo
 
+# system.time({
+#   rm("results")
+# for (record in names(sddb_data)) {
+#   print(record)
+#   if (exists("results")) {
+#     print("previous results exist")
+#     temp <- cut_data_by_interval_type2(sddb_data[[record]]$annotations, sddb_data[[record]]$HR_constant_interval)
+#     results <- rbind(results, temp)
+#   } else {
+#     print("previous results do not exist")
+#     results <- temp}
+# }
+# })
+
+extract_intervals_for_all_records_in_database <- function (database) {
+  rm("results")
+  for (record in names(database)) {
+    print(record)
+    temp <- cut_data_by_interval_type2(database[[record]]$annotations, database[[record]]$HR_constant_interval)
+    if (exists("results")) {
+      print("previous results exist")
+      results <- rbind(results, temp)
+    } else {
+      print("previous results do not exist")
+      results <- temp}
+  }
+  # add name of database
+  results[, "database"] <- database
+  # return results
+  return(results)
+}
+
+results <- extract_intervals_for_all_records_in_database(sddb_data)
+dim(results)
+
+databases_list <- c("sddb_data", "afdb_data")
+for (database in databases_list) {
+  results <- extract_intervals_for_all_records_in_database(database = database)
+  if (exists("all_db_data")) {
+    all_db_data <- rbind(all_db_data, results)
+  } else {
+    all_db_data <- results
+  }
+}
+dim(all_db_data)
+
 # TODO : en major loop skozi vse recorde v enem data baseu  - dodaja v data frame
 # TODO : še en loop, ki gre skozi vse baze? ali pa potem na koncu zmergam...
 
