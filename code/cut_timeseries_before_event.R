@@ -66,7 +66,3 @@ for (database in databases_list) {
 
 dim(all_db_data)
 
-# TODO : en major loop skozi vse recorde v enem data baseu  - dodaja v data frame
-# TODO : še en loop, ki gre skozi vse baze? ali pa potem na koncu zmergam...
-
-# TODO: ali ima zanji interval annotacij vrenost TIME enako zadnji vrednosti time serije podatkov? # tule je BUG !!!!
