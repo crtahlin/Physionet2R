@@ -65,4 +65,6 @@ for (database in databases_list) {
 }
 
 dim(all_db_data)
+unique(all_db_data$database)
+save(all_db_data, file = "./data/all_db_data.Rdata")
 
