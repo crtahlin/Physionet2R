@@ -9,6 +9,10 @@ library(ggplot2)
 # in to plotaj
 library(dplyr)
 all_db_data_info <- distinct(all_db_data[, c("interval_ID","database","Interval_length", "Interval_type")])
+str(all_db_data_info)
+# save dataframe
+save(all_db_data_info, file = "./data/all_db_data_info.Rdata")
+
 ggplot(data = all_db_data_info) + geom_histogram(aes(x = Interval_length)) + facet_wrap(~ Interval_type) 
 table(all_db_data_info$Interval_type, all_db_data_info$database)
 
@@ -36,7 +40,9 @@ unique(all_db_data$database)
 
 ggplot(data = all_db_data_info) + 
   geom_histogram(aes(x = Interval_length)) +
-  facet_wrap(~ Interval_type)  +
+  facet_grid(database ~ Interval_type)  +
   xlim(0, 5000)  
+
+table(all_db_data_info$database, all_db_data_info$Interval_length)
 
 summary(all_db_data_info$Interval_length)
