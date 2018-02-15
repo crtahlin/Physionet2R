@@ -1,3 +1,6 @@
+# imports data for all physionet databases that are considered applicaple
+# saves the data in a subfolder of the physionet viewer
+
 detach("package:physionet2R", unload = TRUE)
 library(physionet2R)
 
