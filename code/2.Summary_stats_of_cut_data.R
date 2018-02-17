@@ -1,3 +1,6 @@
+# makes some plots of the data
+# also makes the dataframe with data summary
+
 # str(all_db_data)
 # make an overview of data by:
 # interval_type
@@ -8,7 +11,7 @@ library(ggplot2)
 # todo: ohrani samo unique values za database + interval_ID
 # in to plotaj
 library(dplyr)
-all_db_data_info <- distinct(all_db_data[, c("interval_ID","database","Interval_length", "Interval_type")])
+all_db_data_info <- distinct(all_db_data[, c("interval_ID","database", "record", "Interval_length", "Interval_type", "Interval_start", "Interval_end")])
 str(all_db_data_info)
 # save dataframe
 save(all_db_data_info, file = "./data/all_db_data_info.Rdata")
@@ -46,3 +49,18 @@ ggplot(data = all_db_data_info) +
 table(all_db_data_info$database, all_db_data_info$Interval_length)
 
 summary(all_db_data_info$Interval_length)
+
+# statistika za intervale daljše od 60 sekund
+all_db_data_info_subset <- all_db_data_info[all_db_data_info$Interval_length > 60,]
+ggplot(data = all_db_data_info_subset) + geom_histogram(aes(x = Interval_length)) + facet_wrap(~ Interval_type) 
+table(all_db_data_info_subset$Interval_type, all_db_data_info_subset$database)
+
+# statistika za intervale daljše od 300 sekund (5 minut)
+all_db_data_info_subset <- all_db_data_info[all_db_data_info$Interval_length > 300,]
+ggplot(data = all_db_data_info_subset) + geom_histogram(aes(x = Interval_length)) + facet_wrap(~ Interval_type) 
+table(all_db_data_info_subset$Interval_type, all_db_data_info_subset$database)
+
+# statistika za intervale daljše od 1800 sekund (30 minut)
+all_db_data_info_subset <- all_db_data_info[all_db_data_info$Interval_length > 1800,]
+ggplot(data = all_db_data_info_subset) + geom_histogram(aes(x = Interval_length)) + facet_wrap(~ Interval_type) 
+table(all_db_data_info_subset$Interval_type, all_db_data_info_subset$database)

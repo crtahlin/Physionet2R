@@ -1,5 +1,6 @@
 # loads each physionet database that is suitable for analysis
 # add data to a dataframe with additional info about the type of interval of the data
+# basicaly - attaches additional columns needed for analysis to the data!
 
 library(physionet2R)
 # cut up timeseries into series before the event taking place
@@ -43,18 +44,33 @@ library(physionet2R)
 # str(results)
 # unique(results$database)
 
+# load the parsed database data
+load(file = "./physionet_viewer/data/afdb_data.Rdata")
+load(file = "./physionet_viewer/data/ltafdb_data.Rdata")
+load(file = "./physionet_viewer/data/mitdb_data.Rdata")
+load(file = "./physionet_viewer/data/nsr2db_data.Rdata")
+load(file = "./physionet_viewer/data/nsrdb_data.Rdata")
+load(file = "./physionet_viewer/data/sddb_data.Rdata")
+
+
+# start the extraction
 databases_list <- c("afdb_data", "ltafdb_data", "mitdb_data", "nsr2db_data", "nsrdb_data", "sddb_data")
+# databases_list <- c("sddb_data")
 rm("all_db_data")
-for (database in databases_list) {
-  results <- extract_intervals_for_all_records_in_database(database = database, db_name = database)
-  if (exists("all_db_data")) {
-    all_db_data <- rbind(all_db_data, results)
-  } else {
-    all_db_data <- results
-  }
-}
+rm("all_db_data_info")
+system.time ({
+  for (database in databases_list) {
+    results <- extract_intervals_for_all_records_in_database(database = database, db_name = database, cores = 6)
+    if (exists("all_db_data")) {
+      all_db_data <- rbind(all_db_data, results)
+      } else {
+        all_db_data <- results
+      }
+    }
+})
 
 dim(all_db_data)
 unique(all_db_data$database)
+head(all_db_data)
 save(all_db_data, file = "./data/all_db_data.Rdata")
 

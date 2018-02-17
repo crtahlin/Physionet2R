@@ -1,6 +1,8 @@
 # imports data for all physionet databases that are considered applicaple
 # saves the data in a subfolder of the physionet viewer
 
+# NOTE: no need to rerun this script unless some bug found! Just load the data from the save .rdata files.
+
 detach("package:physionet2R", unload = TRUE)
 library(physionet2R)
 
