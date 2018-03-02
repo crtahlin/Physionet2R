@@ -6,4 +6,3 @@
 \usage{
 cut_data_by_interval_type2(annotation_data, heart_beat_data)
 }
-

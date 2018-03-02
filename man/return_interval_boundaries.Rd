@@ -7,4 +7,3 @@
 return_interval_boundaries(annotation_data, heart_beat_data,
   event_start_signal = "(AFIB", event_end_signal = "(N")
 }
-

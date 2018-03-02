@@ -7,4 +7,3 @@
 find_annotation(annotation_time = "Seconds", annotation_data,
   lookup_column = "Aux", lookup_texts)
 }
-

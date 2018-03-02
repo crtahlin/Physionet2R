@@ -4,6 +4,5 @@
 \alias{extract_intervals_for_all_records_in_database}
 \title{extract intervals from a database}
 \usage{
-extract_intervals_for_all_records_in_database(database)
+extract_intervals_for_all_records_in_database(database, db_name, cores = 6)
 }
-

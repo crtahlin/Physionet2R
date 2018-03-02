@@ -24,4 +24,3 @@ heart rate in beats per minute (BPM).
 Meant to be used on constant interval measurements.
 Outputs a data frame wih same two cloumns.
 }
-

@@ -6,4 +6,3 @@
 \usage{
 label_interval_type_AFIB(data)
 }
-

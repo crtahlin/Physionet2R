@@ -11,4 +11,3 @@ remove_lines_with_pattern(file, pattern)
 
 \item{pattern}{pattern in line to remove}
 }
-
