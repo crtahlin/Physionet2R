@@ -5,8 +5,7 @@
 \title{funkcija ki vrne vse interval določenega tipa in pri kateri točki naj odreže podatke}
 \usage{
 determine_analysis_intervals(all_db_data_info, Interval_type,
-  Min_interval_length, Keep_total_interval_length = NULL,
-  Cut_off_last_X_seconds)
+  Keep_total_interval_length = NULL, Cut_off_last_X_seconds)
 }
 \description{
 to je input za funkcijo, ki računa BoPe

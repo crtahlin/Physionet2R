@@ -5,6 +5,6 @@
 \title{attach BoP to interval built with determine_analysis_intervals function}
 \usage{
 attach_BoP_to_analysis_intervals(all_db_data, analysis_intervals,
-  subsequenceSize = 240, alphabetSize = 5, wordSize = 4,
+  subsequenceSize = 4 * 60, alphabetSize = 5, wordSize = 4,
   doNumerosityReduction = TRUE)
 }
